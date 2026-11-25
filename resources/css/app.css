@@ -1,0 +1,435 @@
+@import 'tailwindcss';
+
+@import 'tw-animate-css';
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+    --font-sans:
+        'Outfit', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+
+    --color-page: var(--page);
+    --color-panel: var(--panel);
+    --color-surface: var(--surface);
+    --color-surface-2: var(--surface-2);
+    --color-line: var(--line);
+    --color-dim: var(--text-dim);
+    --color-lime: var(--lime);
+    --color-lime-ink: var(--lime-ink);
+    --color-sky: var(--sky);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root,
+.dark {
+    color-scheme: dark;
+
+    /* ACEGG palette */
+    --page: #10131a;
+    --panel: #151922;
+    --surface: #1b2029;
+    --surface-2: #222833;
+    --line: #2a313d;
+    --text-dim: #8a93a6;
+    --lime: #c9f73a;
+    --lime-ink: #11160a;
+    --sky: #1ba3ec;
+
+
+    --background: var(--page);
+    --foreground: #f3f5f9;
+    --card: var(--surface);
+    --card-foreground: #f3f5f9;
+    --popover: var(--surface);
+    --popover-foreground: #f3f5f9;
+    --primary: var(--lime);
+    --primary-foreground: var(--lime-ink);
+    --secondary: var(--surface-2);
+    --secondary-foreground: #f3f5f9;
+    --muted: var(--surface-2);
+    --muted-foreground: var(--text-dim);
+    --accent: var(--surface-2);
+    --accent-foreground: #f3f5f9;
+    --destructive: #e5484d;
+    --destructive-foreground: #ff8a8e;
+    --border: var(--line);
+    --input: var(--line);
+    --ring: var(--lime);
+    --chart-1: #c9f73a;
+    --chart-2: #1ba3ec;
+    --chart-3: #ff8a1f;
+    --chart-4: #a855f7;
+    --chart-5: #f43f5e;
+    --radius: 0.75rem;
+    --sidebar: var(--panel);
+    --sidebar-foreground: #f3f5f9;
+    --sidebar-primary: var(--lime);
+    --sidebar-primary-foreground: var(--lime-ink);
+    --sidebar-accent: var(--surface-2);
+    --sidebar-accent-foreground: #f3f5f9;
+    --sidebar-border: var(--line);
+    --sidebar-ring: var(--lime);
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+        -webkit-tap-highlight-color: transparent;
+        overscroll-behavior-y: none;
+    }
+
+    input,
+    select,
+    textarea {
+        /* iOS zooms into inputs smaller than 16px */
+        @media (max-width: 640px) {
+            font-size: 16px !important;
+        }
+    }
+}
+
+/* Coin flip: continuous 3D tumble while the round is in flight, then a settle. */
+@keyframes coin-spin {
+    from {
+        transform: rotateY(0deg) translateY(0) scale(1);
+    }
+    50% {
+        transform: rotateY(540deg) translateY(-14px) scale(1.03);
+    }
+    to {
+        transform: rotateY(1080deg) translateY(0) scale(1);
+    }
+}
+
+@keyframes coin-land {
+    0% {
+        transform: rotateY(720deg) scale(0.92);
+    }
+    70% {
+        transform: rotateY(0deg) scale(1.04);
+    }
+    100% {
+        transform: rotateY(0deg) scale(1);
+    }
+}
+
+/* Donut Flip: the coin lands on the tile the server drew. */
+@keyframes coin-drop {
+    from {
+        opacity: 0;
+        transform: translateY(-24px) scale(0.55) rotate(-28deg);
+    }
+    62% {
+        opacity: 1;
+        transform: translateY(3px) scale(1.08) rotate(5deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(0deg);
+    }
+}
+
+/* Roulette: the ball drops from the rim into the pocket it landed in. */
+@keyframes ball-settle {
+    0% {
+        transform: translateY(-6px) scale(0.92);
+    }
+    55% {
+        transform: translateY(22px) scale(1.08);
+    }
+    78% {
+        transform: translateY(17px) scale(1);
+    }
+    100% {
+        transform: translateY(20px) scale(1);
+    }
+}
+
+/* Dice Duel: shake in the tray while rolling, then settle on the drawn faces. */
+@keyframes dice-roll {
+    0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+    }
+    35% {
+        transform: translateY(-11px) rotate(-9deg) scale(1.02);
+    }
+    70% {
+        transform: translateY(-3px) rotate(7deg) scale(1);
+    }
+    100% {
+        transform: translateY(0) rotate(0deg) scale(1);
+    }
+}
+
+@keyframes dice-land {
+    0% {
+        transform: scale(0.9);
+    }
+    55% {
+        transform: scale(1.07);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Cards: dealt in from above, then flipped over when the round resolves. */
+@keyframes card-deal {
+    from {
+        opacity: 0;
+        transform: translateY(-16px) rotate(-5deg) scale(0.94);
+    }
+}
+
+@keyframes card-flip-in {
+    from {
+        opacity: 0.15;
+        transform: rotateY(-85deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card-deal,
+    .card-flip-in,
+    .coin-drop {
+        animation: none;
+    }
+}
+
+/* Cases: the reel decelerates hard, then the item under the marker punches. */
+@keyframes case-land {
+    0% {
+        transform: scale(1);
+    }
+    38% {
+        transform: scale(1.14);
+    }
+    70% {
+        transform: scale(0.98);
+    }
+    100% {
+        transform: scale(1.04);
+    }
+}
+
+@keyframes case-burst {
+    from {
+        opacity: 0.8;
+        transform: scale(0.45);
+    }
+    to {
+        opacity: 0;
+        transform: scale(1.8);
+    }
+}
+
+@keyframes case-pop {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.94);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .case-land,
+    .case-burst,
+    .case-pop {
+        animation: none;
+    }
+}
+
+/* Dice: tumble while the roll is in flight, then settle on the rolled face. */
+@keyframes dice-tumble {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+    30% {
+        transform: translateY(-26px) rotate(120deg);
+    }
+    60% {
+        transform: translateY(0) rotate(250deg);
+    }
+    80% {
+        transform: translateY(-8px) rotate(330deg);
+    }
+    100% {
+        transform: translateY(0) rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dice-tumble {
+        animation: none;
+    }
+}
+
+@layer utilities {
+    .card-deal {
+        animation: card-deal 0.45s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+    }
+
+    .card-flip-in {
+        animation: card-flip-in 0.38s ease-out both;
+    }
+
+    .case-land {
+        animation: case-land 0.5s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+    }
+
+    .case-burst {
+        animation: case-burst 0.7s ease-out both;
+    }
+
+    .case-pop {
+        animation: case-pop 0.35s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+    }
+
+    .dice-cube {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        width: 124px;
+        height: 124px;
+        padding: 16px;
+        border-radius: 28px;
+        background: linear-gradient(145deg, #ffffff, #d6dae1);
+        box-shadow:
+            0 9px 0 #a9afb9,
+            0 20px 30px rgba(0, 0, 0, 0.55);
+        transition:
+            background 0.25s,
+            box-shadow 0.25s;
+    }
+
+    .dice-win {
+        background: linear-gradient(145deg, #e6fff1, #9fe6bf);
+        box-shadow:
+            0 9px 0 #5cae84,
+            0 0 36px rgba(34, 197, 94, 0.5);
+    }
+
+    .dice-lose {
+        background: linear-gradient(145deg, #fff0f0, #f0b3b3);
+        box-shadow:
+            0 9px 0 #b87474,
+            0 0 36px rgba(239, 68, 68, 0.4);
+    }
+
+    .dice-tumble {
+        animation: dice-tumble 0.6s ease-in-out;
+    }
+
+    .dice-roll {
+        animation: dice-roll 0.34s ease-in-out infinite;
+    }
+
+    .dice-land {
+        animation: dice-land 0.42s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+    }
+
+    .coin-spin {
+        animation: coin-spin 0.75s linear infinite;
+    }
+
+    .coin-land {
+        animation: coin-land 0.55s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+    }
+
+    .coin-drop {
+        animation: coin-drop 0.45s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+    }
+
+    .ball-settle {
+        animation: ball-settle 0.75s cubic-bezier(0.25, 0.8, 0.3, 1) both;
+    }
+
+    .scrollbar-none {
+        scrollbar-width: none;
+    }
+    .scrollbar-none::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-thin {
+        scrollbar-width: thin;
+        scrollbar-color: var(--line) transparent;
+    }
+
+    /* Card-suit pattern used behind banners */
+    .bg-suits {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='%23ffffff' fill-opacity='0.035'%3E%3Cpath d='M30 8c8 10 20 16 20 26a10 10 0 0 1-17 7l3 11H24l3-11a10 10 0 0 1-17-7c0-10 12-16 20-26z'/%3E%3Cpath d='M90 68c-6-8-18-6-18 4 0 9 18 20 18 20s18-11 18-20c0-10-12-12-18-4z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+}
+
+/* Connect 4: a disc drops into its slot. */
+@keyframes disc-drop {
+    0% {
+        transform: translateY(-320%) scale(0.94);
+        opacity: 0.6;
+    }
+    70% {
+        transform: translateY(3%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.disc-drop {
+    animation: disc-drop 340ms cubic-bezier(0.3, 0.9, 0.4, 1);
+}
